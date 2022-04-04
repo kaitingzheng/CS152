@@ -1,0 +1,12 @@
+function main;
+beginparams
+endparams
+
+beginlocals
+
+  n : integer;
+  i, j, k: integer;
+  t : array [20] of integer;
+  x : enum ( Proc1, Proc2 );
+
+endlocals
