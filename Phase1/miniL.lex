@@ -9,6 +9,7 @@
    /* some common rules */
 DIGIT    [0-9]
 alpha    [a-zA-Z]
+underscore [_]
 
 %%
 
@@ -53,7 +54,7 @@ alpha    [a-zA-Z]
 "]"            {printf("R_SQUARE_BRACKET \n"); currPos += yyleng;}
 ":="           {printf("ASSIGN \n"); currPos += yyleng;}
 
-({alpha}+)    {printf("IDENT %s\n",yytext);currPos += yyleng;}
+(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {printf("IDENT %s\n",yytext);currPos += yyleng;}
 ("##"([ \t]+{alpha}+)*)
 
 
@@ -80,6 +81,10 @@ alpha    [a-zA-Z]
 
 
 .              {printf("Error at line %d, column %d: unrecongonized symbol \"%s\"\n",currLine, currPos, yytext); exit(0);}
+
+(({DIGIT}+{alpha}*{underscore})+)   {printf("Error at line %d, column %d: identifier \"%s\" must start with a letter \n",currLine, currPos, yytext); exit(0);}
+
+({alpha}+{DIGIT}*{underscore}+)   {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore \n",currLine, currPos, yytext); exit(0);}
 
 %%
 	/* C functions used in lexer */
