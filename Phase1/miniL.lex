@@ -8,7 +8,7 @@
 
    /* some common rules */
 DIGIT    [0-9]
-alpha    [a-z,A-Z]
+alpha    [a-zA-Z]
 
 %%
 
@@ -53,8 +53,8 @@ alpha    [a-z,A-Z]
 "]"            {printf("R_SQUARE_BRACKET \n"); currPos += yyleng;}
 ":="           {printf("ASSIGN \n"); currPos += yyleng;}
 
-({alpha}+)    {printf("IDENT %s\n",yytext);}
-
+({alpha}+)    {printf("IDENT %s\n",yytext);currPos += yyleng;}
+("##"([ \t]+{alpha}+)*)
 
 
    /* specific lexer rules in regex */
