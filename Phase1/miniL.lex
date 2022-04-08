@@ -82,7 +82,7 @@ underscore [_]
 
 .              {printf("Error at line %d, column %d: unrecongonized symbol \"%s\"\n",currLine, currPos, yytext); exit(0);}
 
-(({DIGIT}+{alpha}*{underscore})+)   {printf("Error at line %d, column %d: identifier \"%s\" must start with a letter \n",currLine, currPos, yytext); exit(0);}
+(({DIGIT}+{alpha}*{underscore}?)+)   {printf("Error at line %d, column %d: identifier \"%s\" must start with a letter \n",currLine, currPos, yytext); exit(0);}
 
 ({alpha}+{DIGIT}*{underscore}+)   {printf("Error at line %d, column %d: identifier \"%s\" cannot end with an underscore \n",currLine, currPos, yytext); exit(0);}
 
