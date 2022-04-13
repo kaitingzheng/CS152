@@ -1,12 +1,14 @@
-   /* cs152-miniL phase1 Gabirel Ruelas section 23, Kaiting Zheng section 21*/
-   
 %{   
-   /* write your C code here for definitions of variables and including headers */
+   /*
+   Kaiting Zheng, Sec 21
+   Gabriel Ruelas, Sec 23
+
+   Enter C code below for CS152
+   */
    
    int currLine = 1, currPos = 1;
 %}
 
-   /* some common rules */
 DIGIT    [0-9]
 alpha    [a-zA-Z]
 underscore [_]
