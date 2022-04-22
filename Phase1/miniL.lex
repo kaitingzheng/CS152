@@ -59,7 +59,7 @@ underscore [_]
 (({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {printf("IDENT %s\n",yytext);currPos += yyleng;}
 
 
-("##"({alpha}|{DIGIT}|[ \t])*)   {currPos += yyleng;}
+("##"(.)*)   {currPos += yyleng;}
 
 
    /* specific lexer rules in regex */
