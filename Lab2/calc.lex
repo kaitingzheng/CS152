@@ -1,22 +1,19 @@
-/* cs152-calculator */
+   /* cs152-fall08 */
+   /* A flex scanner specification for the calculator language */
+   /* Written by Dennis Jeffrey */
 
-%{
-   /* write your C code here for defination of variables and including headers */
-#include "parser.h"
-
-int currLine = 1, currPos = 1;
-int numNumbers = 0;
-int numOperators = 0;
-int numParens = 0;
-int numEquals = 0;
+%{   
+   #include "y.tab.h"
+   int currLine = 1, currPos = 1;
+   int numNumbers = 0;
+   int numOperators = 0;
+   int numParens = 0;
+   int numEquals = 0;
 %}
 
-
-/* some common rules, for example DIGIT */
 DIGIT    [0-9]
-
+   
 %%
-   /* specific lexer rules in regex */
 
 "-"            {currPos += yyleng; numOperators++; return MINUS;}
 "+"            {currPos += yyleng; numOperators++; return PLUS;}
@@ -34,8 +31,4 @@ DIGIT    [0-9]
 
 .              {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 
-
-
 %%
-	/* C functions used in lexer */
-   /* remove your original main function */

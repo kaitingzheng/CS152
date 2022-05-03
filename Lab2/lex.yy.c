@@ -461,18 +461,17 @@ int yy_flex_debug = 0;
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
 #line 1 "calc.lex"
-/* cs152-calculator */
-#line 4 "calc.lex"
-   /* write your C code here for defination of variables and including headers */
-#include "parser.h"
-
-int currLine = 1, currPos = 1;
-int numNumbers = 0;
-int numOperators = 0;
-int numParens = 0;
-int numEquals = 0;
-/* some common rules, for example DIGIT */
-#line 476 "lex.yy.c"
+/* cs152-fall08 */
+/* A flex scanner specification for the calculator language */
+/* Written by Dennis Jeffrey */
+#line 6 "calc.lex"
+   #include "y.tab.h"
+   int currLine = 1, currPos = 1;
+   int numNumbers = 0;
+   int numOperators = 0;
+   int numParens = 0;
+   int numEquals = 0;
+#line 475 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -654,11 +653,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 18 "calc.lex"
+#line 16 "calc.lex"
 
-   /* specific lexer rules in regex */
 
-#line 662 "lex.yy.c"
+#line 660 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -743,66 +741,66 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 21 "calc.lex"
+#line 18 "calc.lex"
 {currPos += yyleng; numOperators++; return MINUS;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 22 "calc.lex"
+#line 19 "calc.lex"
 {currPos += yyleng; numOperators++; return PLUS;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 23 "calc.lex"
+#line 20 "calc.lex"
 {currPos += yyleng; numOperators++; return MULT;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 24 "calc.lex"
+#line 21 "calc.lex"
 {currPos += yyleng; numOperators++; return DIV;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 25 "calc.lex"
+#line 22 "calc.lex"
 {currPos += yyleng; numEquals++; return EQUAL;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 26 "calc.lex"
+#line 23 "calc.lex"
 {currPos += yyleng; numParens++; return L_PAREN;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 27 "calc.lex"
+#line 24 "calc.lex"
 {currPos += yyleng; numParens++; return R_PAREN;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 29 "calc.lex"
+#line 26 "calc.lex"
 {currPos += yyleng; yylval.dval = atof(yytext); numNumbers++; return NUMBER;}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 31 "calc.lex"
+#line 28 "calc.lex"
 {/* ignore spaces */ currPos += yyleng;}
 	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 33 "calc.lex"
+#line 30 "calc.lex"
 {currLine++; currPos = 1; return END;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 35 "calc.lex"
+#line 32 "calc.lex"
 {printf("Error at line %d, column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 39 "calc.lex"
+#line 34 "calc.lex"
 ECHO;
 	YY_BREAK
-#line 806 "lex.yy.c"
+#line 804 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1796,9 +1794,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 39 "calc.lex"
+#line 34 "calc.lex"
 
-
-	/* C functions used in lexer */
-   /* remove your original main function */
 

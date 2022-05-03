@@ -63,13 +63,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 12 "calc.y" /* yacc.c:1909  */
+#line 11 "calc.y" /* yacc.c:1909  */
 
-  int ival;
-  /* other types of definition */
   double dval;
+  int ival;
 
-#line 73 "y.tab.h" /* yacc.c:1909  */
+#line 72 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

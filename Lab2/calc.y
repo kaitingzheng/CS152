@@ -1,18 +1,16 @@
 /* calculator. */
 %{
-#include <stdio.h>
-#include <stdlib.h>
-void yyerror(const char *msg);
-extern int currLine;
-extern int currPos;
-FILE * yyin;
-
+ #include <stdio.h>
+ #include <stdlib.h>
+ void yyerror(const char *msg);
+ extern int currLine;
+ extern int currPos;
+ FILE * yyin;
 %}
 
 %union{
-  int ival;
-  /* other types of definition */
   double dval;
+  int ival;
 }
 
 %error-verbose
@@ -23,6 +21,7 @@ FILE * yyin;
 %left PLUS MINUS
 %left MULT DIV
 %nonassoc UMINUS
+
 
 %% 
 input:	
@@ -53,7 +52,6 @@ int main(int argc, char **argv) {
    return 0;
 }
 
-
 void yyerror(const char *msg) {
-   printf("** Line %d: %s\n", currLine, currPos, msg);
+   printf("** Line %d, position %d: %s\n", currLine, currPos, msg);
 }
