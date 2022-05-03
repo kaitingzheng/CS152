@@ -1,12 +1,14 @@
-   /* cs152-miniL phase1 */
-   
 %{   
-   /* write your C code here for definitions of variables and including headers */
+   /*
+   Kaiting Zheng, Sec 21
+   Gabriel Ruelas, Sec 23
+
+   Enter C code below for CS152
+   */
    
    int currLine = 1, currPos = 1;
 %}
 
-   /* some common rules */
 DIGIT    [0-9]
 alpha    [a-zA-Z]
 underscore [_]
@@ -55,15 +57,17 @@ underscore [_]
 ":="           {printf("ASSIGN \n"); currPos += yyleng;}
 
 (({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {printf("IDENT %s\n",yytext);currPos += yyleng;}
-("##"([ \t]+{alpha}+)*)
+
+
+("##"(.)*)   {currPos += yyleng;}
 
 
    /* specific lexer rules in regex */
 
 ({DIGIT}+(\.{DIGIT}*)?([eE][+-]?[0-9]+)?)|(\.{DIGIT}+) {printf("NUMBER %s\n", yytext);}
 
-"-"            {printf("MINUS \n");currPos+=yyleng;}
-"+"            {printf("PLUS \n");currPos+=yyleng;}
+"-"            {printf("SUB \n");currPos+=yyleng;}
+"+"            {printf("ADD \n");currPos+=yyleng;}
 "*"            {printf("MULT \n");currPos+=yyleng;}
 "/"            {printf("DIV \n");currPos+=yyleng;}
 "%"            {printf("MOD \n"); currPos+=yyleng;}

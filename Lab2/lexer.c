@@ -467,11 +467,11 @@ char *yytext;
    /* write your C code here for defination of variables and including headers */
 #include "parser.h"
 
-   int currLine = 1, currPos = 1;
-   int numNumbers = 0;
-   int numOperators = 0;
-   int numParens = 0;
-   int numEquals = 0;
+int currLine = 1, currPos = 1;
+int numNumbers = 0;
+int numOperators = 0;
+int numParens = 0;
+int numEquals = 0;
 /* some common rules, for example DIGIT */
 #line 477 "lexer.c"
 
