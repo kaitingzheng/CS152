@@ -13,7 +13,6 @@ void yyerror(const char *msg);
 /* %start program */
 
 %% 
-
   /* write your rules here */
 
 %% 
