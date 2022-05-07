@@ -10,7 +10,9 @@
 
 %union{
   /* put your types here */
-  
+  double dval;
+
+  int ival;
 }
 
 %error-verbose
@@ -32,6 +34,8 @@
 %token BEGINLOOP ENDLOOP READ WRITE AND OR NOT TRUE FALSE RETURN
 %token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
 %token IDENT NUMBER SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
+%token <dval> NUMBER
+
 /* %start program !!NOTE!!CONTINE and FOR tokens not used!*/
 
 %% 

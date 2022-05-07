@@ -5,7 +5,7 @@
 
    Enter C code below for CS152
    */
-    //#include "y.tab.h"
+   #include "miniL-parser.h"
    int currLine = 1, currPos = 1;
 %}
 
@@ -32,12 +32,10 @@ underscore [_]
 "then"         {currPos+= yyleng; return THEN;}
 "endif"        {currPos+= yyleng; return ENDIF;}
 "else"         {currPos+= yyleng; return ELSE;}
-"for"          {currPos+= yyleng; return FOR;}
 "while"        {currPos+= yyleng; return WHILE;}
 "do"           {currPos+= yyleng; return DO;}
 "beginloop"    {currPos+= yyleng; return BEGINLOOP;}
 "endloop"      {currPos+= yyleng; return ENDLOOP;}
-"continue"     {currPos+= yyleng; return CONTINUE;}
 "read"         {currPos+= yyleng; return READ;}
 "write"        {currPos+= yyleng; return WRITE;}
 "and"          {currPos+= yyleng; return AND;}
@@ -64,7 +62,7 @@ underscore [_]
 
    /* specific lexer rules in regex */
 
-({DIGIT}+(\.{DIGIT}*)?([eE][+-]?[0-9]+)?)|(\.{DIGIT}+) {yylval.dval = atof(yytext); return NUMBER;}
+({DIGIT}+(\.{DIGIT}*)?([eE][+-]?[0-9]+)?)|(\.{DIGIT}+) {currPos += yyleng; yylval.dval = atof(yytext); return NUMBER;}
 
 "-"            {currPos+=yyleng; return SUB;}
 "+"            {currPos+=yyleng; return ADD;}
