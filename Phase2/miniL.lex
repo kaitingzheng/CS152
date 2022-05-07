@@ -5,7 +5,7 @@
 
    Enter C code below for CS152
    */
-   
+    //#include "y.tab.h"
    int currLine = 1, currPos = 1;
 %}
 
