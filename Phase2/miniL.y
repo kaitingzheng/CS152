@@ -10,8 +10,8 @@
 
 %union{
   /* put your types here */
-  char* str
-  double dval
+  char* str;
+  double dval;
 }
 
 %error-verbose
@@ -40,8 +40,8 @@
 
 %% 
   /* write your rules here */
-  Program: Function Program {printf("program -> function program\n");}
-         | {printf("program -> epsilon\n");};
+  Program: Function Program {printf("Program -> Function Program\n");}
+         | {printf("Program -> epsilon\n");};
 
   Function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY 
   {printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements SEMICOLON functions END_BODY \n");};
@@ -76,17 +76,17 @@
   RelExp: NOT RelExp2 | RelExp2;
   RelExp2: Exp Comp Exp | TRUE | FALSE | L_PAREN BoolExp R_PAREN;
 
-  Comp: EQ {printf("comp -> EQ \n");} | 
-  NEQ {printf("comp -> NEQ \n");}| 
-  LT {printf("comp -> LT \n");}| 
-  GT {printf("comp -> GT \n");}| 
-  LTE {printf("comp -> LTE \n");}| 
-  GTE{printf("comp -> GTE \n");};
+  Comp: EQ {printf("comp -> EQ \n");} 
+      | NEQ {printf("comp -> NEQ \n");}
+      | LT {printf("comp -> LT \n");}
+      | GT {printf("comp -> GT \n");}
+      | LTE {printf("comp -> LTE \n");}
+      | GTE{printf("comp -> GTE \n");};
 
   Exp: MultExp Exp2;
   Exp2: ADD MultExp Exp2 {printf("exp -> add multexp exp2\n");}
       | SUB MultExp Exp2 {printf("exp -> sub multexp exp2\n");}
-      | {printf("exp -> epsilon\n");};
+      | {printf("Exp -> epsilon\n");};
 
   MultExp: Term MultExp2;
   MultExp2: MULT Term MultExp2 | DIV Term MultExp2 | MOD Term MultExp2 | ;
@@ -97,7 +97,8 @@
   Term4:  COMMA Exp Term4 | ;
 
   Var: IDENT Var2 {printf("Var -> IDENT \n");};
-  Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET | ;
+  Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  {printf("Var2 -> L_SQUARE_BRACKET Exp R_SQUARE_BRACKET \n");};
+      |  {printf("Var -> epsilon \n");};
 
 %% 
 
