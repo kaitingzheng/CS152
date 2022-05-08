@@ -10,9 +10,8 @@
 
 %union{
   /* put your types here */
-  double dval;
-
-  int ival;
+  char* str
+  double dval
 }
 
 %error-verbose
@@ -29,25 +28,32 @@
 %nterm RelExp RelExp2
 %nterm Comp
 
+
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS
 %token BEGIN_BODY END_BODY INTEGER ARRAY ENUM OF IF THEN ENDIF ELSE WHILE DO
 %token BEGINLOOP ENDLOOP READ WRITE AND OR NOT TRUE FALSE RETURN
 %token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
 %token IDENT SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
-%token <dval> NUMBER
+%token NUMBER
 
 /* %start program !!NOTE!!CONTINE and FOR tokens not used!*/
 
 %% 
   /* write your rules here */
-  Program: Function Program | ;
+  Program: Function Program {printf("program -> function program\n");}
+         | {printf("program -> epsilon\n");};
 
-  Function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY ;
-  Function2 : Declaration SEMICOLON Function2 | ;
-  Function3 : Statement SEMICOLON Function3 | ;
+  Function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY 
+  {printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements SEMICOLON functions END_BODY \n");};
+  
+  Function2 : Declaration SEMICOLON Function2 
+            | {printf("function2 -> epsilon\n");} ;
+  Function3 : Statement SEMICOLON Function3 
+            | {printf("function3 -> epsilon\n");};
 
-  Declaration: IDENT Declaration2 COLON Declaration3 ;
-  Declaration2: IDENT Declaration2 | ;
+  Declaration: IDENT Declaration2 COLON Declaration3 {printf("Declaration -> IDENT Declaration2 COLON Declaration3\n");};
+  Declaration2: IDENT Declaration2 {printf("Declaration2 -> IDENT Declaration2\n");}
+               | {printf("declarations -> epsilon\n");};
   Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN | INTEGER | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER ;
 
   Statement: Var ASSIGN Exp 
@@ -70,10 +76,17 @@
   RelExp: NOT RelExp2 | RelExp2;
   RelExp2: Exp Comp Exp | TRUE | FALSE | L_PAREN BoolExp R_PAREN;
 
-  Comp: EQ | NEQ | LT | GT | LTE | GTE;
+  Comp: EQ {printf("comp -> EQ \n");} | 
+  NEQ {printf("comp -> NEQ \n");}| 
+  LT {printf("comp -> LT \n");}| 
+  GT {printf("comp -> GT \n");}| 
+  LTE {printf("comp -> LTE \n");}| 
+  GTE{printf("comp -> GTE \n");};
 
   Exp: MultExp Exp2;
-  Exp2: ADD MultExp Exp2 | SUB MultExp Exp2 | ;
+  Exp2: ADD MultExp Exp2 {printf("exp -> add multexp exp2\n");}
+      | SUB MultExp Exp2 {printf("exp -> sub multexp exp2\n");}
+      | {printf("exp -> epsilon\n");};
 
   MultExp: Term MultExp2;
   MultExp2: MULT Term MultExp2 | DIV Term MultExp2 | MOD Term MultExp2 | ;
@@ -83,7 +96,7 @@
   Term3: Exp Term4 | ;
   Term4:  COMMA Exp Term4 | ;
 
-  Var: IDENT Var2;
+  Var: IDENT Var2 {printf("Var -> IDENT \n");};
   Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET | ;
 
 %% 
