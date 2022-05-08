@@ -28,6 +28,7 @@
 %nterm RelExp RelExp2
 %nterm Comp
 
+%type<str> IDENT
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS
 %token BEGIN_BODY END_BODY INTEGER ARRAY ENUM OF IF THEN ENDIF ELSE WHILE DO
@@ -54,27 +55,38 @@
   Declaration: IDENT Declaration2 COLON Declaration3 {printf("Declaration -> IDENT Declaration2 COLON Declaration3\n");};
   Declaration2: IDENT Declaration2 {printf("Declaration2 -> IDENT Declaration2\n");}
                | {printf("declarations -> epsilon\n");};
-  Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN | INTEGER | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER ;
+  Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN  {printf("Declaration3 -> ENUM L_PAREN IDENT Declaration2 R_PAREN \n");}
+               | INTEGER  {printf("Declaration-> INTEGER\n");}
+               | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER  {printf("Declaration3 -> ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER\n");};
 
-  Statement: Var ASSIGN Exp 
-            | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3 
-            | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP
-            | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp
-            | READ Var Statement4
-            | WRITE Var Statement4
-            | RETURN Exp ;
-  Statement2: Statement SEMICOLON Statement2 | ;
-  Statement3: ENDIF | ELSE Statement SEMICOLON Statement2 ENDIF;
-  Statement4: COMMA Var Statement4 | ;
+  Statement: Var ASSIGN Exp  {printf("Statement -> Var ASSIGN Exp\n");}
+            | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3  {printf("Statement -> IF BoolExp THEN Statement SEMICOLON Statement2 Statement3\n");} 
+            | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  {printf("Statement ->WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP\n");}
+            | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  {printf("Statement -> DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp\n");}
+            | READ Var Statement4 {printf("Statement -> READ Var Statement4\n");}
+            | WRITE Var Statement4  {printf("Statement -> WRITE Var Statement4\n");}
+            | RETURN Exp  {printf("Statement-> RETURN Exp\n");};
+  Statement2: Statement SEMICOLON Statement2  {printf("Statement2 -> Statement SEMICOLON Statement2\n");}
+            |  {printf("Statement2 -> epsilon\n");};
+  Statement3: ENDIF  {printf("Statement3 -> ENDIF\n");}
+            | ELSE Statement SEMICOLON Statement2 ENDIF {printf("Statement3 -> ELSE Statement SEMICOLON Statement2 ENDIF\n");};
+  Statement4: COMMA Var Statement4 {printf("Statement4 -> COMMA Var Statement4\n");}
+            | {printf("Statement4 -> epsilon\n");};
 
-  BoolExp:  RelandExp BoolExp2;
-  BoolExp2: OR RelandExp BoolExp2 | ;
+  BoolExp:  RelandExp BoolExp2 {printf("BoolExp -> RelandExp BoolExp2\n");};
+  BoolExp2: OR RelandExp BoolExp2 {printf("BoolExp -> OR RelandExp BoolExp2\n");}
+         | {printf("Statement3 -> ENDIF\n");};
 
-  RelandExp: RelExp RelandExp2;
-  RelandExp2: AND RelExp RelandExp2 | ;
+  RelandExp: RelExp RelandExp2 {printf("RelandExp -> RelExp RelandExp2\n");};
+  RelandExp2: AND RelExp RelandExp2 {printf("RelandExp2 -> AND RelExp RelandExp2\n");}
+            | {printf("RelandExp2 -> epsilon\n");} ;
 
-  RelExp: NOT RelExp2 | RelExp2;
-  RelExp2: Exp Comp Exp | TRUE | FALSE | L_PAREN BoolExp R_PAREN;
+  RelExp: NOT RelExp2 {printf("RelExp -> NOT RelExp2\n");} 
+         | RelExp2 {printf("RelExp -> RelExp2\n");};
+  RelExp2: Exp Comp Exp {printf("RelExp2 -> Exp Comp Exp\n");}
+         | TRUE {printf("RelExp2 ->TRUE\n");}
+         | FALSE {printf("RelExp2 -> FALSE\n");}
+         | L_PAREN BoolExp R_PAREN {printf("RelExp2 -> L_PAREN BoolExp R_PAREN\n");};
 
   Comp: EQ {printf("comp -> EQ \n");} 
       | NEQ {printf("comp -> NEQ \n");}
@@ -88,13 +100,22 @@
       | SUB MultExp Exp2 {printf("exp -> sub multexp exp2\n");}
       | {printf("Exp -> epsilon\n");};
 
-  MultExp: Term MultExp2;
-  MultExp2: MULT Term MultExp2 | DIV Term MultExp2 | MOD Term MultExp2 | ;
+  MultExp: Term MultExp2 {printf("MultExp -> Term MultExp2\n");};
+  MultExp2: MULT Term MultExp2 {printf("MultExp2 -> MULT Term MultExp2\n");}
+         | DIV Term MultExp2 {printf("MultExp2 -> DIV Term MultExp2\n");}
+         | MOD Term MultExp2 {printf("MultExp2 -> MOD Term MultExp2\n");}
+         | {printf("MultExp2 -> epsilon\n");};
 
-  Term:  SUB Term2 | Term2 | IDENT L_PAREN Term3 R_PAREN;
-  Term2: Var | NUMBER | L_PAREN Exp R_PAREN;
-  Term3: Exp Term4 | ;
-  Term4:  COMMA Exp Term4 | ;
+  Term:  SUB Term2 {printf("Term -> SUB Term2\n");}
+         | Term2 {printf("Term-> Term2\n");}
+         | IDENT L_PAREN Term3 R_PAREN {printf("Term -> DIV Term MultExp2\n");};
+  Term2: Var {printf("Term2 -> Var\n");}
+         | NUMBER {printf("Term2 -> NUMBER\n");}
+         | L_PAREN Exp R_PAREN {printf("Term2 -> L_PAREN Exp R_PAREN\n");};
+  Term3: Exp Term4 {printf("Term3 -> Exp Term4\n");}
+         | {printf("Term3 -> epsilon\n");};
+  Term4:  COMMA Exp Term4 {printf("Term4 -> COMMA Exp Term4\n");}
+         | {printf("Term4 -> epsilon\n");};
 
   Var: IDENT Var2 {printf("Var -> IDENT \n");};
   Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  {printf("Var2 -> L_SQUARE_BRACKET Exp R_SQUARE_BRACKET \n");};
