@@ -28,7 +28,7 @@
 %nterm RelExp RelExp2
 %nterm Comp
 
-%type<str> IDENT
+%type<str> Var
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS
 %token BEGIN_BODY END_BODY INTEGER ARRAY ENUM OF IF THEN ENDIF ELSE WHILE DO
@@ -117,7 +117,7 @@
   Term4:  COMMA Exp Term4 {printf("Term4 -> COMMA Exp Term4\n");}
          | {printf("Term4 -> epsilon\n");};
 
-  Var: IDENT Var2 {printf("Var -> IDENT \n");};
+  Var: IDENT Var2 {printf("Var -> IDENT %s\n", $$);};
   Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  {printf("Var2 -> L_SQUARE_BRACKET Exp R_SQUARE_BRACKET \n");};
       |  {printf("Var -> epsilon \n");};
 

@@ -44,6 +44,7 @@ underscore [_]
 "true"         {currPos+= yyleng; return TRUE;}
 "false"        {currPos+= yyleng; return FALSE;}
 "return"       {currPos+= yyleng; return RETURN;}
+"continue"     {currPos+= yyleng; retrun CONTINE;}
 
 ";"            {currPos += yyleng; return SEMICOLON;}
 ":"            {currPos += yyleng; return COLON;}
@@ -54,7 +55,7 @@ underscore [_]
 "]"            {currPos += yyleng; return R_SQUARE_BRACKET;}
 ":="           {currPos += yyleng; return ASSIGN;}
 
-(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {currPos += yyleng; return IDENT;}
+(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {currPos += yyleng; yylval.str = yytext; return IDENT;}
 
 
 ("##"(.)*)   {currPos += yyleng;}
