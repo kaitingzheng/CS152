@@ -55,7 +55,7 @@ underscore [_]
 "]"            {currPos += yyleng; return R_SQUARE_BRACKET;}
 ":="           {currPos += yyleng; return ASSIGN;}
 
-(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {currPos += yyleng; yylval.str = yytext; return IDENT;}
+(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {currPos += yyleng; yylval.str = strdup(yytext); return IDENT;}
 
 
 ("##"(.)*)   {currPos += yyleng;}
