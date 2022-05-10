@@ -34,9 +34,9 @@
 %token BEGIN_BODY END_BODY INTEGER ARRAY ENUM OF IF THEN ENDIF ELSE WHILE DO
 %token BEGINLOOP ENDLOOP READ WRITE AND OR NOT TRUE FALSE RETURN
 %token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
-%token CONTINUE IDENT SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
+%token CONTINUE SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
 %token NUMBER
-
+%token <str>IDENT
 /* %start program !!NOTE!!CONTINE and FOR tokens not used!*/
 
 %% 
@@ -47,9 +47,9 @@
   Function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY 
   {printf("function -> FUNCTION IDENT SEMICOLON BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements SEMICOLON functions END_BODY \n");};
   
-  Function2 : Declaration SEMICOLON Function2 
+  Function2 : Declaration SEMICOLON Function2 {printf("Function2 -> Declaratio SEMICOLON Function2\n");} 
             | {printf("function2 -> epsilon\n");} ;
-  Function3 : Statement SEMICOLON Function3 
+  Function3 : Statement SEMICOLON Function3 {printf("Function2 -> Statement SEMICOLON Function3\n");} 
             | {printf("function3 -> epsilon\n");};
 
   Declaration: IDENT Declaration2 COLON Declaration3 {printf("Declaration -> IDENT Declaration2 COLON Declaration3\n");};
@@ -118,7 +118,7 @@
   Term4:  COMMA Exp Term4 {printf("Term4 -> COMMA Exp Term4\n");}
          | {printf("Term4 -> epsilon\n");};
 
-  Var: IDENT Var2 {printf("Var -> IDENT %s\n", $$);};
+  Var: IDENT Var2 ;
   Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  {printf("Var2 -> L_SQUARE_BRACKET Exp R_SQUARE_BRACKET \n");};
       |  {printf("Var -> epsilon \n");};
 
