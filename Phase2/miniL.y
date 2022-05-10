@@ -53,7 +53,7 @@
             | {printf("function3 -> epsilon\n");};
 
   Declaration: IDENT Declaration2 COLON Declaration3 {printf("Declaration -> IDENT Declaration2 COLON Declaration3\n");};
-  Declaration2: IDENT Declaration2 {printf("Declaration2 -> IDENT Declaration2\n");}
+  Declaration2: COMMA IDENT Declaration2 {printf("Declaration2 -> IDENT Declaration2\n");}
                | {printf("declarations -> epsilon\n");};
   Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN  {printf("Declaration3 -> ENUM L_PAREN IDENT Declaration2 R_PAREN \n");}
                | INTEGER  {printf("Declaration-> INTEGER\n");}
