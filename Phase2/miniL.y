@@ -34,7 +34,7 @@
 %token BEGIN_BODY END_BODY INTEGER ARRAY ENUM OF IF THEN ENDIF ELSE WHILE DO
 %token BEGINLOOP ENDLOOP READ WRITE AND OR NOT TRUE FALSE RETURN
 %token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
-%token IDENT SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
+%token CONTINUE IDENT SUB ADD MULT DIV MOD EQ NEQ LT GT LTE GTE
 %token NUMBER
 
 /* %start program !!NOTE!!CONTINE and FOR tokens not used!*/
@@ -65,6 +65,7 @@
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  {printf("Statement -> DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp\n");}
             | READ Var Statement4 {printf("Statement -> READ Var Statement4\n");}
             | WRITE Var Statement4  {printf("Statement -> WRITE Var Statement4\n");}
+            | CONTINUE
             | RETURN Exp  {printf("Statement-> RETURN Exp\n");};
   Statement2: Statement SEMICOLON Statement2  {printf("Statement2 -> Statement SEMICOLON Statement2\n");}
             |  {printf("Statement2 -> epsilon\n");};

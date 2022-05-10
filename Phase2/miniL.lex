@@ -44,7 +44,7 @@ underscore [_]
 "true"         {currPos+= yyleng; return TRUE;}
 "false"        {currPos+= yyleng; return FALSE;}
 "return"       {currPos+= yyleng; return RETURN;}
-"continue"     {currPos+= yyleng; retrun CONTINE;}
+"continue"     {currPos+= yyleng; return CONTINUE;}
 
 ";"            {currPos += yyleng; return SEMICOLON;}
 ":"            {currPos += yyleng; return COLON;}
