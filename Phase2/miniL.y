@@ -1,4 +1,7 @@
-    /* cs152-miniL phase2 */
+    /* 
+    Kaiting Zheng, Sec 21
+    Gabriel Ruelas, Sec 23
+    cs152-miniL phase2 */
 %{
 #include <stdio.h>
  #include <stdlib.h>
