@@ -68,7 +68,7 @@
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  {printf("Statement -> DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp\n");}
             | READ Var Statement4 {printf("Statement -> READ Var Statement4\n");}
             | WRITE Var Statement4  {printf("Statement -> WRITE Var Statement4\n");}
-            | CONTINUE
+            | CONTINUE {printf("Statement -> CONTINUE\n");}
             | RETURN Exp  {printf("Statement-> RETURN Exp\n");};
   Statement2: Statement SEMICOLON Statement2  {printf("Statement2 -> Statement SEMICOLON Statement2\n");}
             |  {printf("Statement2 -> epsilon\n");};
@@ -99,9 +99,9 @@
       | LTE {printf("comp -> LTE \n");}
       | GTE{printf("comp -> GTE \n");};
 
-  Exp: MultExp Exp2;
-  Exp2: ADD MultExp Exp2 {printf("exp -> add multexp exp2\n");}
-      | SUB MultExp Exp2 {printf("exp -> sub multexp exp2\n");}
+  Exp: MultExp Exp2 {printf("exp -> add multexp exp2\n");};
+  Exp2: ADD MultExp Exp2 {printf("exp2 -> add multexp exp2\n");}
+      | SUB MultExp Exp2 {printf("exp2 -> sub multexp exp2\n");}
       | {printf("Exp -> epsilon\n");};
 
   MultExp: Term MultExp2 {printf("MultExp -> Term MultExp2\n");};

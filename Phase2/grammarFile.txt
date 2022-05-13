@@ -1,0 +1,79 @@
+ Program: Function Program 
+         | epsilon;
+
+  Function: FUNCTION IDENT SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY ;
+  
+  Function2 : Declaration SEMICOLON Function2  
+            | epsilon;
+  Function3 : Statement SEMICOLON Function3  
+            | epsilon;
+
+  Declaration: IDENT Declaration2 COLON Declaration3 ;
+  Declaration2: COMMA IDENT Declaration2 
+               | epsilon;
+  Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN  
+               | INTEGER  
+               | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER ;
+
+  Statement: Var ASSIGN Exp  
+            | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3  
+            | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  
+            | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  
+            | READ Var Statement4 
+            | WRITE Var Statement4  
+            | CONTINUE
+            | RETURN Exp ;
+  Statement2: Statement SEMICOLON Statement2  
+            |  epsilon;
+  Statement3: ENDIF  
+            | ELSE Statement SEMICOLON Statement2 ENDIF ;
+  Statement4: COMMA Var Statement4
+            | epsilon;
+
+  BoolExp:  RelandExp BoolExp2 ;
+  BoolExp2: OR RelandExp BoolExp2
+         | epsilon;
+
+  RelandExp: RelExp RelandExp2;
+  RelandExp2: AND RelExp RelandExp2 
+            | epsilon ;
+
+  RelExp: NOT RelExp2  
+         | RelExp2 ;
+  RelExp2: Exp Comp Exp 
+         | TRUE 
+         | FALSE 
+         | L_PAREN BoolExp R_PAREN;
+
+  Comp: EQ 
+      | NEQ 
+      | LT 
+      | GT
+      | LTE 
+      | GTE;
+
+  Exp: MultExp Exp2;
+  Exp2: ADD MultExp Exp2 
+      | SUB MultExp Exp2 
+      | epsilon;
+
+  MultExp: Term MultExp2;
+  MultExp2: MULT Term MultExp2 
+         | DIV Term MultExp2 
+         | MOD Term MultExp2 
+         | epsilon;
+
+  Term:  SUB Term2 
+         | Term2 
+         | IDENT L_PAREN Term3 R_PAREN 
+  Term2: Var 
+         | NUMBER 
+         | L_PAREN Exp R_PAREN ;
+  Term3: Exp Term4 
+         | epsilon;
+  Term4:  COMMA Exp Term4 
+         | epsilon;
+
+  Var: IDENT Var2 ;
+  Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  ;
+      |  epsilon;
