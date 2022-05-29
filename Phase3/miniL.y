@@ -9,10 +9,21 @@ extern int yylex();
 #include <stdio.h>
 #include <stdlib.h>
 
+#include<vector>
+#include<stack>
+#include<fstream>
+#include<sstream>
+#include<string>
+
+using namespace std;
+
  extern int currLine;
  extern int currPos;
 
 extern "C" FILE *yyin;
+
+stringstream milCode;
+ostringstream out_code;
 
 %}
 
@@ -134,7 +145,7 @@ extern "C" FILE *yyin;
   Term4:  COMMA Exp Term4 {printf("Term4 -> COMMA Exp Term4\n");}
          | {printf("Term4 -> epsilon\n");};
 
-  Var: IDENT Var2 ;
+  Var: IDENT Var2 {out_code << "something" << endl;};
   Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  {printf("Var2 -> L_SQUARE_BRACKET Exp R_SQUARE_BRACKET \n");};
       |  {printf("Var -> epsilon \n");};
 
@@ -148,6 +159,11 @@ int main(int argc, char **argv) {
       }//end if
    }//end if
    yyparse(); // Calls yylex() for tokens.
+
+   ofstream myFile;
+   myFile.open("machine_code.mil");
+   myFile << out_code.str();
+   myFile.close();
    return 0;
 }
 
