@@ -46,6 +46,13 @@ extern "C" FILE *yyin;
 %token <str>IDENT
 
 %token<int_val> DIGIT
+%type<str> EQ
+%type<str> NEQ
+%type<str> LT
+%type<str> GT
+%type<str> LTE
+%type<str> GTE
+%type<str>Comp
 
 %% 
 
@@ -98,12 +105,12 @@ extern "C" FILE *yyin;
          | FALSE {printf("RelExp2 -> FALSE\n");}
          | L_PAREN BoolExp R_PAREN {printf("RelExp2 -> L_PAREN BoolExp R_PAREN\n");};
 
-  Comp: EQ {printf("comp -> EQ \n");} 
-      | NEQ {printf("comp -> NEQ \n");}
-      | LT {printf("comp -> LT \n");}
-      | GT {printf("comp -> GT \n");}
-      | LTE {printf("comp -> LTE \n");}
-      | GTE{printf("comp -> GTE \n");};
+  Comp: EQ {$$ = $1;} 
+      | NEQ {$$ = "!=";}
+      | LT {$$ = $1;}
+      | GT {$$ = $1;}
+      | LTE {$$ = $1;}
+      | GTE{$$ = $1;};
 
   Exp: MultExp Exp2 {printf("exp -> add multexp exp2\n");};
   Exp2: ADD MultExp Exp2 {printf("exp2 -> add multexp exp2\n");}
