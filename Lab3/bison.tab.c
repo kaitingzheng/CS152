@@ -85,6 +85,7 @@ ostringstream out_code;
 char *identToken;
 int numberToken;
 int  count_names = 0;
+int numTemp = 0;
 
 
 enum Type { Integer, Array };
@@ -98,6 +99,14 @@ struct Function {
 };
 
 std::vector <Function> symbol_table;
+vector<string> tempTable;
+
+string make_temp(){
+  string temp = "_temp" + to_string(numTemp);
+  tempTable.push_back(temp);
+  numTemp++;
+  return temp;
+}
 
 
 Function *get_function() {
@@ -143,7 +152,7 @@ void print_symbol_table(void) {
 }
 
 
-#line 147 "bison.tab.c" /* yacc.c:339  */
+#line 156 "bison.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -206,11 +215,11 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 83 "bison.y" /* yacc.c:355  */
+#line 92 "bison.y" /* yacc.c:355  */
 
   char *op_val;
 
-#line 214 "bison.tab.c" /* yacc.c:355  */
+#line 223 "bison.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -227,7 +236,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 231 "bison.tab.c" /* yacc.c:358  */
+#line 240 "bison.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -526,9 +535,9 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   101,   101,   108,   112,   118,   117,   135,   138,   144,
-     156,   160,   166,   170,   174,   178,   182,   187,   193,   201,
-     206
+       0,   110,   110,   117,   121,   127,   126,   144,   147,   153,
+     165,   169,   175,   184,   192,   200,   208,   217,   224,   232,
+     237
 };
 #endif
 
@@ -1322,32 +1331,32 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 102 "bison.y" /* yacc.c:1646  */
+#line 111 "bison.y" /* yacc.c:1646  */
     {
   printf("prog_start -> functions\n");
-}
-#line 1330 "bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 3:
-#line 108 "bison.y" /* yacc.c:1646  */
-    { 
-  printf("functions -> epsilon\n");
-  out_code << "endfunc" << endl;
 }
 #line 1339 "bison.tab.c" /* yacc.c:1646  */
     break;
 
+  case 3:
+#line 117 "bison.y" /* yacc.c:1646  */
+    { 
+  printf("functions -> epsilon\n");
+  out_code << "endfunc" << endl;
+}
+#line 1348 "bison.tab.c" /* yacc.c:1646  */
+    break;
+
   case 4:
-#line 113 "bison.y" /* yacc.c:1646  */
+#line 122 "bison.y" /* yacc.c:1646  */
     {
   printf("functions -> function functions\n");
 }
-#line 1347 "bison.tab.c" /* yacc.c:1646  */
+#line 1356 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 5:
-#line 118 "bison.y" /* yacc.c:1646  */
+#line 127 "bison.y" /* yacc.c:1646  */
     {
   // midrule:
   // add the function to the symbol table.
@@ -1355,35 +1364,35 @@ yyreduce:
   add_function_to_symbol_table(func_name);
   out_code<< "func " << func_name << endl;
 }
-#line 1359 "bison.tab.c" /* yacc.c:1646  */
+#line 1368 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 6:
-#line 129 "bison.y" /* yacc.c:1646  */
+#line 138 "bison.y" /* yacc.c:1646  */
     {
   printf("function -> FUNCTION IDENT ; BEGIN_PARAMS declarations END_PARAMS BEGIN_LOCALS declarations END_LOCALS BEGIN_BODY statements END_BODY\n");
 }
-#line 1367 "bison.tab.c" /* yacc.c:1646  */
+#line 1376 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 135 "bison.y" /* yacc.c:1646  */
+#line 144 "bison.y" /* yacc.c:1646  */
     {
   printf("declarations -> epsilon\n");
 }
-#line 1375 "bison.tab.c" /* yacc.c:1646  */
+#line 1384 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 139 "bison.y" /* yacc.c:1646  */
+#line 148 "bison.y" /* yacc.c:1646  */
     {
   printf("declarations -> declaration ; declarations\n");
 }
-#line 1383 "bison.tab.c" /* yacc.c:1646  */
+#line 1392 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 145 "bison.y" /* yacc.c:1646  */
+#line 154 "bison.y" /* yacc.c:1646  */
     {
   printf("declaration -> IDENT : integer\n");
 
@@ -1393,105 +1402,126 @@ yyreduce:
   add_variable_to_symbol_table(value, t);
   out_code << ". " << value << endl;
 }
-#line 1397 "bison.tab.c" /* yacc.c:1646  */
+#line 1406 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 157 "bison.y" /* yacc.c:1646  */
+#line 166 "bison.y" /* yacc.c:1646  */
     {
   printf("statements -> statement ;\n");
 }
-#line 1405 "bison.tab.c" /* yacc.c:1646  */
+#line 1414 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 161 "bison.y" /* yacc.c:1646  */
+#line 170 "bison.y" /* yacc.c:1646  */
     {
   printf("statements -> statement ; statements\n");
 }
-#line 1413 "bison.tab.c" /* yacc.c:1646  */
+#line 1422 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 167 "bison.y" /* yacc.c:1646  */
+#line 176 "bison.y" /* yacc.c:1646  */
     {
   printf("statement -> IDENT := symbol + symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "+ " << temp << ", " << (yyvsp[-2].op_val) << ", " << (yyvsp[0].op_val) << endl;
+  out_code << "= " << (yyvsp[-4].op_val) << ", " << temp << endl;
+
 }
-#line 1421 "bison.tab.c" /* yacc.c:1646  */
+#line 1435 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 13:
-#line 171 "bison.y" /* yacc.c:1646  */
+#line 185 "bison.y" /* yacc.c:1646  */
     {
   printf("statement -> IDENT := symbol - symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "- " << temp << ", " << (yyvsp[-2].op_val) << ", " << (yyvsp[0].op_val) << endl;
+  out_code << "= " << (yyvsp[-4].op_val) << ", " << temp << endl;
 }
-#line 1429 "bison.tab.c" /* yacc.c:1646  */
+#line 1447 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 14:
-#line 175 "bison.y" /* yacc.c:1646  */
+#line 193 "bison.y" /* yacc.c:1646  */
     {
   printf("statement -> IDENT := symbol * symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "* " << temp << ", " << (yyvsp[-2].op_val) << ", " << (yyvsp[0].op_val) << endl;
+  out_code << "= " << (yyvsp[-4].op_val) << ", " << temp << endl;
 }
-#line 1437 "bison.tab.c" /* yacc.c:1646  */
+#line 1459 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 179 "bison.y" /* yacc.c:1646  */
+#line 201 "bison.y" /* yacc.c:1646  */
     {
   printf("statement -> IDENT := symbol / symbol\n");
-}
-#line 1445 "bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 16:
-#line 183 "bison.y" /* yacc.c:1646  */
-    {
-  printf("statement -> IDENT := symbol %% symbol\n");
-}
-#line 1453 "bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 17:
-#line 188 "bison.y" /* yacc.c:1646  */
-    {
-  printf("statement -> IDENT := symbol\n");
-
-}
-#line 1462 "bison.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 18:
-#line 194 "bison.y" /* yacc.c:1646  */
-    {
-  printf("statement -> WRITE IDENT\n");
-  out_code << ".> " << symbol_table[0].declarations[0].name.c_str() << endl;
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "/ " << temp << ", " << (yyvsp[-2].op_val) << ", " << (yyvsp[0].op_val) << endl;
+  out_code << "= " << (yyvsp[-4].op_val) << ", " << temp << endl;
 }
 #line 1471 "bison.tab.c" /* yacc.c:1646  */
     break;
 
+  case 16:
+#line 209 "bison.y" /* yacc.c:1646  */
+    {
+  printf("statement -> IDENT := symbol %% symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "% " << temp << ", " << (yyvsp[-2].op_val) << ", " << (yyvsp[0].op_val) << endl;
+  out_code << "= " << (yyvsp[-4].op_val) << ", " << temp << endl;
+}
+#line 1483 "bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 17:
+#line 218 "bison.y" /* yacc.c:1646  */
+    {
+  printf("statement -> IDENT := symbol\n");
+  out_code << "= " << (yyvsp[-2].op_val)<< ", " << (yyvsp[0].op_val) << endl;
+
+}
+#line 1493 "bison.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 18:
+#line 225 "bison.y" /* yacc.c:1646  */
+    {
+  printf("statement -> WRITE IDENT\n");
+  out_code << ".> " << (yyvsp[0].op_val)<< endl;
+}
+#line 1502 "bison.tab.c" /* yacc.c:1646  */
+    break;
+
   case 19:
-#line 202 "bison.y" /* yacc.c:1646  */
+#line 233 "bison.y" /* yacc.c:1646  */
     {
   printf("symbol -> IDENT %s\n", (yyvsp[0].op_val)); 
   (yyval.op_val) = (yyvsp[0].op_val); 
 }
-#line 1480 "bison.tab.c" /* yacc.c:1646  */
+#line 1511 "bison.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 207 "bison.y" /* yacc.c:1646  */
+#line 238 "bison.y" /* yacc.c:1646  */
     {
   printf("symbol -> NUMBER %s\n", (yyvsp[0].op_val));
   (yyval.op_val) = (yyvsp[0].op_val); 
 
-  out_code << "= " << symbol_table[0].declarations[0].name.c_str() <<", " << (yyvsp[0].op_val) << endl;
 }
-#line 1491 "bison.tab.c" /* yacc.c:1646  */
+#line 1521 "bison.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1495 "bison.tab.c" /* yacc.c:1646  */
+#line 1525 "bison.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1719,7 +1749,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 214 "bison.y" /* yacc.c:1906  */
+#line 244 "bison.y" /* yacc.c:1906  */
 
 
 int main(int argc, char **argv)

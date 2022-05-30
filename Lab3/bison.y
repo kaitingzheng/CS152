@@ -20,6 +20,7 @@ ostringstream out_code;
 char *identToken;
 int numberToken;
 int  count_names = 0;
+int numTemp = 0;
 
 
 enum Type { Integer, Array };
@@ -33,6 +34,14 @@ struct Function {
 };
 
 std::vector <Function> symbol_table;
+vector<string> tempTable;
+
+string make_temp(){
+  string temp = "_temp" + to_string(numTemp);
+  tempTable.push_back(temp);
+  numTemp++;
+  return temp;
+}
 
 
 Function *get_function() {
@@ -166,34 +175,56 @@ statement:
 IDENT ASSIGN symbol ADD symbol
 {
   printf("statement -> IDENT := symbol + symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "+ " << temp << ", " << $3 << ", " << $5 << endl;
+  out_code << "= " << $1 << ", " << temp << endl;
+
 }
 | IDENT ASSIGN symbol SUB symbol
 {
   printf("statement -> IDENT := symbol - symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "- " << temp << ", " << $3 << ", " << $5 << endl;
+  out_code << "= " << $1 << ", " << temp << endl;
 }
 | IDENT ASSIGN symbol MULT symbol
 {
   printf("statement -> IDENT := symbol * symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "* " << temp << ", " << $3 << ", " << $5 << endl;
+  out_code << "= " << $1 << ", " << temp << endl;
 }
 | IDENT ASSIGN symbol DIV symbol
 {
   printf("statement -> IDENT := symbol / symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "/ " << temp << ", " << $3 << ", " << $5 << endl;
+  out_code << "= " << $1 << ", " << temp << endl;
 }
 | IDENT ASSIGN symbol MOD symbol
 {
   printf("statement -> IDENT := symbol %% symbol\n");
+  string temp = make_temp();
+  out_code << ". " << temp << endl;
+  out_code<< "% " << temp << ", " << $3 << ", " << $5 << endl;
+  out_code << "= " << $1 << ", " << temp << endl;
 }
 
 | IDENT ASSIGN symbol
 {
   printf("statement -> IDENT := symbol\n");
+  out_code << "= " << $1<< ", " << $3 << endl;
 
 }
 
 | WRITE IDENT
 {
   printf("statement -> WRITE IDENT\n");
-  out_code << ".> " << symbol_table[0].declarations[0].name.c_str() << endl;
+  out_code << ".> " << $2<< endl;
 }
 ;
 
@@ -208,7 +239,6 @@ IDENT
   printf("symbol -> NUMBER %s\n", $1);
   $$ = $1; 
 
-  out_code << "= " << symbol_table[0].declarations[0].name.c_str() <<", " << $1 << endl;
 }
 
 %%
