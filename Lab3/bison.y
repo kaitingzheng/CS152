@@ -1,12 +1,21 @@
 %{
 #include<stdio.h>
+#include <stdlib.h>
 #include<string>
 #include<vector>
 #include<string.h>
 
+#include<fstream>
+#include<sstream>
+
+using namespace std;
+
 extern int yylex(void);
 void yyerror(const char *msg);
 extern int currLine;
+extern "C" FILE *yyin;
+
+ostringstream out_code;
 
 char *identToken;
 int numberToken;
@@ -68,7 +77,6 @@ void print_symbol_table(void) {
   printf("--------------------\n");
 }
 
-
 %}
 
 
@@ -99,6 +107,7 @@ functions:
 /* epsilon */
 { 
   printf("functions -> epsilon\n");
+  out_code << "endfunc" << endl;
 }
 | function functions
 {
@@ -111,6 +120,7 @@ function: FUNCTION IDENT
   // add the function to the symbol table.
   std::string func_name = $2;
   add_function_to_symbol_table(func_name);
+  out_code<< "func " << func_name << endl;
 }
 	SEMICOLON
 	BEGIN_PARAMS declarations END_PARAMS
@@ -139,6 +149,7 @@ declaration:
   std::string value = $1;
   Type t = Integer;
   add_variable_to_symbol_table(value, t);
+  out_code << ". " << value << endl;
 };
 
 statements: 
@@ -176,11 +187,13 @@ IDENT ASSIGN symbol ADD symbol
 | IDENT ASSIGN symbol
 {
   printf("statement -> IDENT := symbol\n");
+
 }
 
 | WRITE IDENT
 {
   printf("statement -> WRITE IDENT\n");
+  out_code << ".> " << symbol_table[0].declarations[0].name.c_str() << endl;
 }
 ;
 
@@ -194,14 +207,27 @@ IDENT
 {
   printf("symbol -> NUMBER %s\n", $1);
   $$ = $1; 
+
+  out_code << "= " << symbol_table[0].declarations[0].name.c_str() <<", " << $1 << endl;
 }
 
 %%
 
 int main(int argc, char **argv)
 {
+  if (argc > 1) {
+      yyin = fopen(argv[1], "r");
+      if (yyin == NULL){
+         printf("syntax: %s filename\n", argv[0]);
+      }//end if
+   }//end if
    yyparse();
    print_symbol_table();
+
+  ofstream myFile;
+   myFile.open("machine_code.mil");
+   myFile << out_code.str();
+   myFile.close();
    return 0;
 }
 
