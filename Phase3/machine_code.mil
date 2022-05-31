@@ -1,7 +1,7 @@
-something
-something
-something
-something
-something
-something
-something
+func fibonacci
+. k
+. j
+func main
+. n
+. fib_n
+endfunc

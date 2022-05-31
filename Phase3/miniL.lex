@@ -7,6 +7,9 @@
    */
    #include "miniL-parser.hpp"
    int currLine = 1, currPos = 1;
+
+   extern char *identToken;
+   extern int numberToken;
 %}
 
 DIGIT    [0-9]
@@ -55,7 +58,14 @@ underscore [_]
 "]"            {currPos += yyleng; return R_SQUARE_BRACKET;}
 ":="           {currPos += yyleng; return ASSIGN;}
 
-(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)   {currPos += yyleng; printf("ident -> IDENT %s\n", yytext); return IDENT;}
+(({alpha}+{DIGIT}*)+)|(({alpha}+{DIGIT}*)+({underscore}({alpha}|{DIGIT})+)*)     {
+   currPos += yyleng;
+   char * token = new char[yyleng];
+   strcpy(token, yytext);
+   yylval.op_val = token;
+   identToken = yytext; 
+   return IDENT;
+}
 
 
 ("##"(.)*)   {currPos += yyleng;}
@@ -63,7 +73,14 @@ underscore [_]
 
    /* specific lexer rules in regex */
 
-({DIGIT}+(\.{DIGIT}*)?([eE][+-]?[0-9]+)?)|(\.{DIGIT}+) {currPos += yyleng; yylval.int_val = atof(yytext); return NUMBER;}
+({DIGIT}+(\.{DIGIT}*)?([eE][+-]?[0-9]+)?)|(\.{DIGIT}+) {
+  currPos += yyleng; 
+  char * token = new char[yyleng];
+  strcpy(token, yytext);
+  yylval.op_val = token;
+  numberToken = atoi(yytext); 
+  return NUMBER;
+}
 
 "-"            {currPos+=yyleng; return SUB;}
 "+"            {currPos+=yyleng; return ADD;}
