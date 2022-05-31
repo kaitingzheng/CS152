@@ -50,10 +50,40 @@ struct Dec {
        string count;
 };
 
+struct TnO {
+string operation;
+string term;
+};
+
+struct e {
+  string place;
+  string code;
+  vector<TnO> list;
+  int count = 0;
+};
+
+struct me {
+  string place;
+  string code;
+  vector<TnO> list;
+};
+
+struct S {
+  string before;
+  string after;
+  string code;
+
+};
+
 std::vector <Function> symbol_table;
 vector<string> tempTable;
 vector<string> labelTable;
 Dec declarationX;
+
+e E;
+me mE;
+
+
 
 string make_temp(){
   string temp = "_temp" + to_string(numTemp);
@@ -112,6 +142,72 @@ void print_symbol_table(void) {
   printf("--------------------\n");
 }
 
+void mEfinished() {
+  if (mE.place == "!!!") return;
+
+  if (mE.list.size() == 0) {
+    cout << "hi mE size check\n";
+    string temp = make_temp();
+    out_code << ". " << temp << "\n";
+    out_code << "= " <<temp << ", " << mE.place << "\n";
+    //E.place = mE.place;
+  }
+  else {
+    
+    for (int i = mE.list.size()-1; i >= 0; --i) {
+      string temp = make_temp();
+      out_code << ". " << temp << "\n";
+      out_code << mE.list.at(i).operation << " ";
+      out_code << temp << ", ";
+      if (i ==  mE.list.size()-1) {
+        out_code << mE.place << ", ";
+        
+      }
+      else {
+        out_code << tempTable.at(tempTable.size()-2) << ", ";
+      }
+      out_code << mE.list.at(i).term << "\n";
+    }
+  }
+  mE.list.clear();
+  mE.place = "!!!";
+}
+
+void Efinished() {
+  if (E.place == "!!!") return;
+
+  if (E.list.size() == 0) {
+    //string temp = make_temp();
+    //out_code << ". " << temp << "\n";
+    //out_code << "= " <<temp << ", " << E.place << "\n";
+  }
+  else {
+    
+    for (int i = E.list.size()-1; i >= 0; --i) {
+      string temp = make_temp();
+      out_code << ". " << temp << "\n";
+      out_code << E.list.at(i).operation << " ";
+      out_code << temp << ", ";
+      if (i ==  E.list.size()-1) {
+        cout << "hi E if\n";
+        cout << "size :" << tempTable.size() << "\n";
+        cout << "E.count : " << E.count << "\n";
+        out_code << tempTable.at((tempTable.size()-1) - E.count - 1) << ", ";
+        
+      }
+      else {
+        cout << "hi E else\n";
+        out_code << tempTable.at((tempTable.size()-1) - 1) << ", ";
+      }
+      cout << "hi E after if else\n";
+      out_code << tempTable.at((tempTable.size()-1) - E.count) << "\n";
+      cout << "after last print\n";
+    }
+  }
+  E.count = 0;
+  E.list.clear();
+  E.place = "!!!";
+}
 
 
 %}
@@ -124,38 +220,39 @@ void print_symbol_table(void) {
 
 %error-verbose
 %start Program
-%nterm Function Function2 Function3
-%nterm Declaration Declaration2 Declaration3
-%nterm Statement Statement2 Statement3 Statement4
-%nterm Var Var2
-%nterm Term Term2 Term3 Term4
-%nterm Exp Exp2
-%nterm MultExp MultExp2
-%nterm BoolExp BoolExp2
-%nterm RelandExp RelandExp2
-%nterm RelExp RelExp2
-%nterm Comp
+
 
 %type<str> Var
 
 %token FUNCTION BEGIN_PARAMS END_PARAMS BEGIN_LOCALS END_LOCALS
-%token BEGIN_BODY END_BODY INTEGER ARRAY ENUM OF IF THEN ENDIF ELSE WHILE DO
-%token BEGINLOOP ENDLOOP READ WRITE AND OR NOT TRUE FALSE RETURN
-%token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET ASSIGN
-%token CONTINUE MULT DIV MOD 
-%token <str>EQ <str>NEQ <str>LT <str>GT <str>LTE <str>GTE
-%token SUB ADD
+%token BEGIN_BODY END_BODY INTEGER ENUM OF IF THEN ENDIF ELSE WHILE DO
+%token BEGINLOOP ENDLOOP READ WRITE TRUE FALSE RETURN
+%token SEMICOLON COLON COMMA L_PAREN R_PAREN L_SQUARE_BRACKET R_SQUARE_BRACKET
+%token CONTINUE
 %token <str> NUMBER 
 %token <str> IDENT
 
 
-%type<str>Comp
+
+%right ASSIGN
+%left OR
+%left AND
+%right NOT
+%left <str>LT LTE GT GTE EQ NEQ
+%left ADD SUB
+%left MULT DIV MOD
+%left ARRAY
+%left FUNCTION
+
+%type<str> Comp
+%type<str> Term
+%type<str> MultExp
 
 %% 
 
 
-Program: Function Program 
-         | { printf("functions -> epsilon\n"); out_code << "endfunc" << endl;}
+Program: Function {out_code << "endfunc" << endl;} Program 
+         | { printf("functions -> epsilon\n");}
 
 Function: FUNCTION IDENT 
               {std::string func_name = $2; 
@@ -164,12 +261,12 @@ Function: FUNCTION IDENT
               SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY
  
   
-  Function2 : Declaration SEMICOLON Function2 
+Function2 : Declaration SEMICOLON Function2 
             | 
-  Function3 : Statement SEMICOLON Function3 
+Function3 : Statement SEMICOLON Function3 
             | 
 
-  Declaration: IDENT {declarationX.id_list.push_back($1);} Declaration2 COLON Declaration3 
+Declaration: IDENT {declarationX.id_list.push_back($1);} Declaration2 COLON Declaration3 
   {
          if (declarationX.type == Array) {
                 for (int i = 0; i < declarationX.id_list.size(); i++) {
@@ -188,14 +285,14 @@ Function: FUNCTION IDENT
          
   }
 
-  Declaration2: COMMA IDENT {;declarationX.id_list.push_back($2);} Declaration2
+Declaration2: COMMA IDENT {;declarationX.id_list.push_back($2);} Declaration2
                | 
 
-  Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN
+Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN
                | INTEGER {declarationX.type = Integer;}
                | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {declarationX.type = Array; declarationX.count = $3;}
 
-  Statement: Var ASSIGN Exp
+Statement: Var ASSIGN Exp {Efinished();}
             | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3
             | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  
@@ -203,58 +300,61 @@ Function: FUNCTION IDENT
             | WRITE Var Statement4  
             | CONTINUE 
             | RETURN Exp  
-  Statement2: Statement SEMICOLON Statement2  
+Statement2: Statement SEMICOLON Statement2  
             |  
-  Statement3: ENDIF  
+Statement3: ENDIF  
             | ELSE Statement SEMICOLON Statement2 ENDIF 
-  Statement4: COMMA Var Statement4 
+Statement4: COMMA Var Statement4 
             | 
 
-  BoolExp:  RelandExp BoolExp2 
-  BoolExp2: OR RelandExp BoolExp2 
+BoolExp:  RelandExp BoolExp2 
+BoolExp2: OR RelandExp BoolExp2 
          | 
 
-  RelandExp: RelExp RelandExp2 
-  RelandExp2: AND RelExp RelandExp2 
+RelandExp: RelExp RelandExp2 
+RelandExp2: AND RelExp RelandExp2 
             | 
 
-  RelExp: NOT RelExp2 
+RelExp: NOT RelExp2 
          | RelExp2 
-  RelExp2: Exp Comp Exp 
+RelExp2: Exp {Efinished();} Comp Exp {Efinished();}
          | TRUE 
          | FALSE 
          | L_PAREN BoolExp R_PAREN 
 
-  Comp: EQ {$$ = $1;} 
+Comp: EQ {$$ =  $1;} 
       | NEQ {$$ = $1;}
       | LT {$$ = $1;}
       | GT {$$ = $1;}
       | LTE {$$ = $1;}
       | GTE {$$ = $1;};
 
-  Exp: MultExp Exp2 
-  Exp2: ADD MultExp Exp2 
-      | SUB MultExp Exp2 
+Exp: MultExp {mEfinished();} Exp2 
+Exp2: ADD MultExp {mEfinished();} Exp2 {TnO tempTnO; tempTnO.operation = "+"; tempTnO.term = $2;E.list.push_back(tempTnO); E.count++;}
+      | SUB MultExp {mEfinished();} Exp2 {TnO tempTnO; tempTnO.operation = "-"; tempTnO.term = $2;E.list.push_back(tempTnO);  E.count++;}
       | 
-  MultExp: Term MultExp2 
-  MultExp2: MULT Term MultExp2 
-         | DIV Term MultExp2 
-         | MOD Term MultExp2 
-         | 
+      
+MultExp: Term {mE.place = $1;} MultExp2 
+MultExp2: MULT Term MultExp2 {TnO tempTnO; tempTnO.operation = "*"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
+         | DIV Term MultExp2 {TnO tempTnO; tempTnO.operation = "/"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
+         | MOD Term MultExp2 {TnO tempTnO; tempTnO.operation = "%"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
+         | /*epsilon*/
 
-  Term:  SUB Term2 
-         | Term2 
-         | IDENT L_PAREN Term3 R_PAREN 
-  Term2: Var 
-         | NUMBER 
-         | L_PAREN Exp R_PAREN 
-  Term3: Exp Term4 
-         | 
-  Term4:  COMMA Exp Term4 
-         | 
+Term: SUB Var 
+      | SUB NUMBER
+      | SUB L_PAREN Exp R_PAREN
+      | Var {$$ = $1;}
+      | NUMBER {$$ = $1;}
+      | L_PAREN Exp {Efinished();} R_PAREN 
+      | IDENT L_PAREN Term2 R_PAREN 
 
-  Var: IDENT Var2 
-  Var2: L_SQUARE_BRACKET Exp R_SQUARE_BRACKET  
+Term2: Exp Term3 
+         | /*epsilon*/
+Term3:  COMMA Exp {Efinished();} Term3 
+         | /*epsilon*/
+
+Var: IDENT Var2 {$$ = $1;}
+Var2: L_SQUARE_BRACKET Exp {Efinished();} R_SQUARE_BRACKET  
       |  
 
 %% 

@@ -1,7 +1,33 @@
 func fibonacci
 . k
-. j
+. _temp0
+* _temp0, 1, 2
+. _temp1
+* _temp1, _temp0, 3
+. _temp2
+= _temp2, k
+. _temp3
+= _temp3, 1
+. _temp4
+= _temp4, 1
+. _temp5
+= _temp5, k
+. _temp6
+= _temp6, 1
+. _temp7
+= _temp7, fibonacci
+. _temp8
+= _temp8, k
+. _temp9
+= _temp9, 2
+. _temp10
+= _temp10, fibonacci
+endfunc
 func main
 . n
 . fib_n
+. _temp11
+= _temp11, n
+. _temp12
+= _temp12, fibonacci
 endfunc
