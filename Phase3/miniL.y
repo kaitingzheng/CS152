@@ -86,14 +86,14 @@ me mE;
 
 
 string make_temp(){
-  string temp = "_temp" + to_string(numTemp);
+  string temp = "__temp__" + to_string(numTemp);
   tempTable.push_back(temp);
   numTemp++;
   return temp;
 }
 
 string make_label(){
-  string temp = "_label" + to_string(numLabel);
+  string temp = "__label__" + to_string(numLabel);
   labelTable.push_back(temp);
   numLabel++;
   return temp;
@@ -247,6 +247,7 @@ void Efinished() {
 %type<str> Comp
 %type<str> Term
 %type<str> MultExp
+%type<str> Declaration
 
 %% 
 
@@ -261,7 +262,7 @@ Function: FUNCTION IDENT
               SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY
  
   
-Function2 : Declaration SEMICOLON Function2 
+Function2 : Declaration SEMICOLON Function2 {out_code << "= "<< $1 << ", $0" << endl;}
             | 
 Function3 : Statement SEMICOLON Function3 
             | 
@@ -271,12 +272,14 @@ Declaration: IDENT {declarationX.id_list.push_back($1);} Declaration2 COLON Decl
          if (declarationX.type == Array) {
                 for (int i = 0; i < declarationX.id_list.size(); i++) {
                        out_code << ".[] " <<declarationX.id_list.at(i) << ", " << declarationX.count << "\n";
+                       $$ = $1;
                 }
          }
          else {
                 
                 for (int j = 0; j < declarationX.id_list.size(); j++) {
                        out_code << ". " <<declarationX.id_list.at(j) << "\n";
+                       $$ = $1;
                 }
          }
          
@@ -293,13 +296,29 @@ Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN
                | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {declarationX.type = Array; declarationX.count = $3;}
 
 Statement: Var ASSIGN Exp {Efinished();}
-            | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3
+            | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3{
+              string begin = make_label();
+              string end = make_label();
+
+              string temp = make_temp();
+              // out_code << ". " << temp << endl;
+              // out_code << "= " << temp << ", k" << endl;
+              // cout << "in IF STATEMENT" << endl;
+
+
+            }
             | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  
-            | READ Var Statement4 
-            | WRITE Var Statement4  
+            | READ Var Statement4 {
+              out_code << ".< " << $2 << endl;
+            }
+            | WRITE Var Statement4  {
+              out_code << ".> " << $2 << endl;
+            }
             | CONTINUE 
-            | RETURN Exp  
+            | RETURN Exp{
+              out_code<< "ret " << tempTable[tempTable.size()-1] << endl; 
+            }
 Statement2: Statement SEMICOLON Statement2  
             |  
 Statement3: ENDIF  
