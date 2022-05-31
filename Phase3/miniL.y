@@ -25,13 +25,13 @@ using namespace std;
 
 extern "C" FILE *yyin;
 
-stringstream milCode;
 ostringstream out_code;
 
 char *identToken;
 int numberToken;
 int  count_names = 0;
 int numTemp = 0;
+int numLabel = 0;
 
 
 enum Type { Integer, Array };
@@ -52,12 +52,20 @@ struct Dec {
 
 std::vector <Function> symbol_table;
 vector<string> tempTable;
+vector<string> labelTable;
 Dec declarationX;
 
 string make_temp(){
   string temp = "_temp" + to_string(numTemp);
   tempTable.push_back(temp);
   numTemp++;
+  return temp;
+}
+
+string make_label(){
+  string temp = "_label" + to_string(numLabel);
+  labelTable.push_back(temp);
+  numLabel++;
   return temp;
 }
 
