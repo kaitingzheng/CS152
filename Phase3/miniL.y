@@ -247,7 +247,9 @@ void Efinished() {
 %type<str> Comp
 %type<str> Term
 %type<str> MultExp
-%type<str> Declaration
+%type<str> Declaration 
+%type<str> RelExp 
+%type<str> RelExp2
 
 %% 
 
@@ -259,13 +261,15 @@ Function: FUNCTION IDENT
               {std::string func_name = $2; 
               add_function_to_symbol_table(func_name);
               out_code << "func " << func_name << endl;} 
-              SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function2 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY
+              SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function4 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY
  
   
-Function2 : Declaration SEMICOLON Function2 {out_code << "= "<< $1 << ", $0" << endl;}
-            | 
+Function2 : Declaration SEMICOLON Function2 {out_code << "= " << $1<< ", $0" << endl;}
+            |
 Function3 : Statement SEMICOLON Function3 
-            | 
+            |
+Function4 : Declaration SEMICOLON Function4
+            |
 
 Declaration: IDENT {declarationX.id_list.push_back($1);} Declaration2 COLON Declaration3 
   {
@@ -296,17 +300,11 @@ Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN
                | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {declarationX.type = Array; declarationX.count = $3;}
 
 Statement: Var ASSIGN Exp {Efinished();}
-            | IF BoolExp THEN Statement SEMICOLON Statement2 Statement3{
-              string begin = make_label();
-              string end = make_label();
+            | IF BoolExp THEN {
+              out_code << "<= __temp__ 2, __temp__1 " << endl;
 
-              string temp = make_temp();
-              // out_code << ". " << temp << endl;
-              // out_code << "= " << temp << ", k" << endl;
-              // cout << "in IF STATEMENT" << endl;
-
-
-            }
+              cout << "Calling if statement" << endl;
+            }Statement  SEMICOLON Statement2 Statement3
             | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  
             | READ Var Statement4 {
@@ -318,6 +316,8 @@ Statement: Var ASSIGN Exp {Efinished();}
             | CONTINUE 
             | RETURN Exp{
               out_code<< "ret " << tempTable[tempTable.size()-1] << endl; 
+
+              cout << "Calling RETURN statement" << endl;
             }
 Statement2: Statement SEMICOLON Statement2  
             |  
