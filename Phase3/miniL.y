@@ -58,7 +58,8 @@ string term;
 struct e {
   string place;
   string code;
-  vector<TnO> list;
+  vector<string> list;
+  vector<string> temp_list;
   int count = 0;
 };
 
@@ -146,7 +147,6 @@ void mEfinished() {
   if (mE.place == "!!!") return;
 
   if (mE.list.size() == 0) {
-    cout << "hi mE size check\n";
     string temp = make_temp();
     out_code << ". " << temp << "\n";
     out_code << "= " <<temp << ", " << mE.place << "\n";
@@ -169,6 +169,7 @@ void mEfinished() {
       out_code << mE.list.at(i).term << "\n";
     }
   }
+  E.temp_list.push_back(tempTable.back());
   mE.list.clear();
   mE.place = "!!!";
 }
@@ -182,30 +183,24 @@ void Efinished() {
     //out_code << "= " <<temp << ", " << E.place << "\n";
   }
   else {
-    
-    for (int i = E.list.size()-1; i >= 0; --i) {
+    cout << "size : " << E.list.size() << "\n";
+    for (int i = 0; i < E.list.size(); ++i) {
       string temp = make_temp();
       out_code << ". " << temp << "\n";
-      out_code << E.list.at(i).operation << " ";
+      out_code << E.list.at(i) << " ";
       out_code << temp << ", ";
-      if (i ==  E.list.size()-1) {
-        cout << "hi E if\n";
-        cout << "size :" << tempTable.size() << "\n";
-        cout << "E.count : " << E.count << "\n";
-        out_code << tempTable.at((tempTable.size()-1) - E.count - 1) << ", ";
-        
+      if (i ==  0) {
+        out_code << E.temp_list.at(i) << ", " << E.temp_list.at(i+1) << "\n";
       }
       else {
-        cout << "hi E else\n";
-        out_code << tempTable.at((tempTable.size()-1) - 1) << ", ";
+        out_code << E.temp_list.at(i+1) << ", ";
       }
-      cout << "hi E after if else\n";
-      out_code << tempTable.at((tempTable.size()-1) - E.count) << "\n";
-      cout << "after last print\n";
+      if (i != 0 ) out_code << tempTable.at((tempTable.size()-1) - 1) << "\n";
+      
     }
   }
-  E.count = 0;
   E.list.clear();
+  E.temp_list.clear();
   E.place = "!!!";
 }
 
