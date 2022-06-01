@@ -244,9 +244,9 @@ void Efinished() {
 %left ARRAY
 %left FUNCTION
 
-%type<str> Comp
+%type<str> Comp Exp Exp2
 %type<str> Term
-%type<str> MultExp
+%type<str> MultExp MultExp2
 %type<str> Declaration 
 %type<str> RelExp 
 %type<str> RelExp2
@@ -301,10 +301,19 @@ Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN
 
 Statement: Var ASSIGN Exp {Efinished();}
             | IF BoolExp THEN {
-              out_code << "<= __temp__ 2, __temp__1 " << endl;
+                          
+                string label1 = make_label();
+                string label2 = make_label();
 
-              cout << "Calling if statement" << endl;
-            }Statement  SEMICOLON Statement2 Statement3
+                out_code << "?:= " << label1 << ", " << tempTable[numTemp-1] << endl;
+
+                out_code << ":= " << label2 << endl;
+                out_code << ": " << label1 << endl;
+
+
+
+            }
+            Statement SEMICOLON Statement2 Statement3
             | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  
             | READ Var Statement4 {
@@ -314,10 +323,14 @@ Statement: Var ASSIGN Exp {Efinished();}
               out_code << ".> " << $2 << endl;
             }
             | CONTINUE 
+            
             | RETURN Exp{
-              out_code<< "ret " << tempTable[tempTable.size()-1] << endl; 
+              string temp = make_temp();
 
-              cout << "Calling RETURN statement" << endl;
+              out_code << ". " << temp << endl;
+              out_code << "= " << temp << ", "<< $2 << endl;
+
+              out_code<< "ret " << temp << endl; 
             }
 Statement2: Statement SEMICOLON Statement2  
             |  
@@ -336,25 +349,55 @@ RelandExp2: AND RelExp RelandExp2
 
 RelExp: NOT RelExp2 
          | RelExp2 
-RelExp2: Exp {Efinished();} Comp Exp {Efinished();}
+RelExp2: Exp Comp Exp {
+            string temp1 = make_temp();
+            string temp2 = make_temp();
+
+            out_code << ". " << temp1 << endl;
+            out_code << "= " << temp1 << ", "<< $1 << endl;
+
+            out_code << ". " << temp2 << endl;
+            out_code << "= " << temp2 << ", "<< $3 << endl;
+
+            string temp3 = make_temp();
+
+            out_code << ". " << temp3 << endl;
+
+            //compare
+            out_code << $2 << " " << temp3 << ", " << temp1 << ", " << temp2 << endl;
+
+          }
          | TRUE 
          | FALSE 
          | L_PAREN BoolExp R_PAREN 
 
-Comp: EQ {$$ =  $1;} 
-      | NEQ {$$ = $1;}
-      | LT {$$ = $1;}
-      | GT {$$ = $1;}
-      | LTE {$$ = $1;}
-      | GTE {$$ = $1;};
+Comp: EQ {$$ =  "==";} 
+      | NEQ {$$ = "!=";}
+      | LT {$$ = "<";}
+      | GT {$$ = ">";}
+      | LTE {$$ = "<=";}
+      | GTE {$$ = ">=";};
 
-Exp: MultExp {mEfinished();} Exp2 
-Exp2: ADD MultExp {mEfinished();} Exp2 {TnO tempTnO; tempTnO.operation = "+"; tempTnO.term = $2;E.list.push_back(tempTnO); E.count++;}
+Exp: MultExp Exp2 {$$ = $1;}
+Exp2: ADD MultExp {mEfinished();} Exp2 {
+          TnO tempTnO;
+          tempTnO.operation = "+"; 
+          tempTnO.term = $2;
+          E.list.push_back(tempTnO); 
+          E.count++;
+
+        }
       | SUB MultExp {mEfinished();} Exp2 {TnO tempTnO; tempTnO.operation = "-"; tempTnO.term = $2;E.list.push_back(tempTnO);  E.count++;}
       | 
       
-MultExp: Term {mE.place = $1;} MultExp2 
-MultExp2: MULT Term MultExp2 {TnO tempTnO; tempTnO.operation = "*"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
+MultExp: Term {mE.place = $1;} MultExp2 {}
+MultExp2: MULT Term MultExp2 {
+            TnO tempTnO; 
+            tempTnO.operation = "*"; 
+            tempTnO.term = $2;
+            mE.list.push_back(tempTnO);  
+            E.count++;
+          }
          | DIV Term MultExp2 {TnO tempTnO; tempTnO.operation = "/"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
          | MOD Term MultExp2 {TnO tempTnO; tempTnO.operation = "%"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
          | /*epsilon*/

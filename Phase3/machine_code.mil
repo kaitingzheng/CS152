@@ -5,31 +5,33 @@ func fibonacci
 = __temp__0, k
 . __temp__1
 = __temp__1, 1
-<= __temp__ 2, __temp__1 
 . __temp__2
-= __temp__2, 1
-ret __temp__2
+<= __temp__2, __temp__0, __temp__1
+?:= __label__0, __temp__2
+:= __label__1
+: __label__0
 . __temp__3
-= __temp__3, k
+= __temp__3, 1
+ret __temp__3
 . __temp__4
 = __temp__4, 1
 . __temp__5
-= __temp__5, fibonacci
+= __temp__5, 2
 . __temp__6
-= __temp__6, k
-. __temp__7
-= __temp__7, 2
-. __temp__8
-= __temp__8, fibonacci
-ret __temp__8
+= __temp__6, fibonacci
+. __temp__10
+= __temp__10, fibonacci
+ret __temp__10
 endfunc
 func main
 . n
 . fib_n
 .< n
-. __temp__9
-= __temp__9, n
-. __temp__10
-= __temp__10, fibonacci
+. __temp__11
++ __temp__11, __temp__7, __temp__8
+. __temp__12
+- __temp__12, __temp__11, __temp__9
+. __temp__13
+- __temp__13, __temp__12, __temp__10
 .> fib_n
 endfunc
