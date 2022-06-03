@@ -1,4 +1,9 @@
-/* cs152-miniL phase3 */
+   /*
+   Kaiting Zheng, Sec 21
+   Gabriel Ruelas, Sec 23
+
+   Enter C code below for CS152
+   */
 
 
 %{
