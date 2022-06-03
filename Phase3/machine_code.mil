@@ -13,25 +13,34 @@ func fibonacci
 . __temp__3
 = __temp__3, 1
 ret __temp__3
+: __label__1
 . __temp__4
-= __temp__4, 1
+= __temp__4, k
 . __temp__5
-= __temp__5, 2
+= __temp__5, 1
 . __temp__6
-= __temp__6, fibonacci
+- __temp__6, __temp__4, __temp__5
+. __temp__7
+= __temp__7, fibonacci
+. __temp__8
+= __temp__8, k
+. __temp__9
+= __temp__9, 2
 . __temp__10
-= __temp__10, fibonacci
-ret __temp__10
+- __temp__10, __temp__8, __temp__9
+. __temp__11
+= __temp__11, fibonacci
+. __temp__12
++ __temp__12, __temp__10, __temp__11
+ret __temp__12
 endfunc
 func main
 . n
 . fib_n
 .< n
-. __temp__11
-+ __temp__11, __temp__7, __temp__8
-. __temp__12
-- __temp__12, __temp__11, __temp__9
 . __temp__13
-- __temp__13, __temp__12, __temp__10
+= __temp__13, n
+. __temp__14
+= __temp__14, fibonacci
 .> fib_n
 endfunc

@@ -144,6 +144,8 @@ void print_symbol_table(void) {
 }
 
 void mEfinished() {
+
+
   if (mE.place == "!!!") return;
 
   if (mE.list.size() == 0) {
@@ -170,11 +172,13 @@ void mEfinished() {
     }
   }
   E.temp_list.push_back(tempTable.back());
-  mE.list.clear();
+  //mE.list.clear();
   mE.place = "!!!";
 }
 
 void Efinished() {
+
+
   if (E.place == "!!!") return;
 
   if (E.list.size() == 0) {
@@ -183,21 +187,21 @@ void Efinished() {
     //out_code << "= " <<temp << ", " << E.place << "\n";
   }
   else {
-    cout << "size : " << E.list.size() << "\n";
-    for (int i = 0; i < E.list.size(); ++i) {
-      string temp = make_temp();
-      out_code << ". " << temp << "\n";
-      out_code << E.list.at(i) << " ";
-      out_code << temp << ", ";
-      if (i ==  0) {
-        out_code << E.temp_list.at(i) << ", " << E.temp_list.at(i+1) << "\n";
-      }
-      else {
-        out_code << E.temp_list.at(i+1) << ", ";
-      }
-      if (i != 0 ) out_code << tempTable.at((tempTable.size()-1) - 1) << "\n";
+    // cout << "size : " << E.list.size() << "\n";
+    // for (int i = 0; i < E.list.size(); ++i) {
+    //   string temp = make_temp();
+    //   out_code << ". " << temp << "\n";
+    //   out_code << E.list.at(i) << " ";
+    //   out_code << temp << ", ";
+    //   if (i ==  0) {
+    //     out_code << E.temp_list.at(i) << ", " << E.temp_list.at(i+1) << "\n";
+    //   }
+    //   else {
+    //     out_code << E.temp_list.at(i+1) << ", ";
+    //   }
+    //   if (i != 0 ) out_code << tempTable.at((tempTable.size()-1) - 1) << "\n";
       
-    }
+    // }
   }
   E.list.clear();
   E.temp_list.clear();
@@ -249,14 +253,14 @@ void Efinished() {
 %% 
 
 
-Program: Function {out_code << "endfunc" << endl;} Program 
+Program: Function {out_code << "endfunc" << endl;} Program
          | { printf("functions -> epsilon\n");}
 
 Function: FUNCTION IDENT 
               {std::string func_name = $2; 
               add_function_to_symbol_table(func_name);
               out_code << "func " << func_name << endl;} 
-              SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function4 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY
+              SEMICOLON BEGIN_PARAMS Function2 END_PARAMS BEGIN_LOCALS Function4 END_LOCALS BEGIN_BODY Statement SEMICOLON Function3 END_BODY 
  
   
 Function2 : Declaration SEMICOLON Function2 {out_code << "= " << $1<< ", $0" << endl;}
@@ -287,10 +291,10 @@ Declaration: IDENT {declarationX.id_list.push_back($1);} Declaration2 COLON Decl
          
   }
 
-Declaration2: COMMA IDENT {;declarationX.id_list.push_back($2);} Declaration2
+Declaration2: COMMA IDENT {;declarationX.id_list.push_back($2);} Declaration2 
                | 
 
-Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN
+Declaration3: ENUM L_PAREN IDENT Declaration2 R_PAREN 
                | INTEGER {declarationX.type = Integer;}
                | ARRAY L_SQUARE_BRACKET NUMBER R_SQUARE_BRACKET OF INTEGER {declarationX.type = Array; declarationX.count = $3;}
 
@@ -308,7 +312,10 @@ Statement: Var ASSIGN Exp {Efinished();}
 
 
             }
-            Statement SEMICOLON Statement2 Statement3
+            Statement {
+              out_code << ": "<<  labelTable[labelTable.size()-1] << endl;
+            }
+            SEMICOLON Statement2 Statement3
             | WHILE BoolExp BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP  
             | DO BEGINLOOP Statement SEMICOLON Statement2 ENDLOOP WHILE BoolExp  
             | READ Var Statement4 {
@@ -320,14 +327,10 @@ Statement: Var ASSIGN Exp {Efinished();}
             | CONTINUE 
             
             | RETURN Exp{
-              string temp = make_temp();
-
-              out_code << ". " << temp << endl;
-              out_code << "= " << temp << ", "<< $2 << endl;
-
-              out_code<< "ret " << temp << endl; 
+              out_code<< "ret " << tempTable[tempTable.size()-1] << endl; 
+              //Efinished();
             }
-Statement2: Statement SEMICOLON Statement2  
+Statement2: Statement SEMICOLON Statement2 
             |  
 Statement3: ENDIF  
             | ELSE Statement SEMICOLON Statement2 ENDIF 
@@ -345,21 +348,25 @@ RelandExp2: AND RelExp RelandExp2
 RelExp: NOT RelExp2 
          | RelExp2 
 RelExp2: Exp Comp Exp {
-            string temp1 = make_temp();
-            string temp2 = make_temp();
+            // string temp1 = make_temp();
+            // string temp2 = make_temp();
 
-            out_code << ". " << temp1 << endl;
-            out_code << "= " << temp1 << ", "<< $1 << endl;
+            // out_code << ". " << temp1 << endl;
+            // out_code << "= " << temp1 << ", "<< $1 << endl;
 
-            out_code << ". " << temp2 << endl;
-            out_code << "= " << temp2 << ", "<< $3 << endl;
+            // out_code << ". " << temp2 << endl;
+            // out_code << "= " << temp2 << ", "<< $3 << endl;
 
             string temp3 = make_temp();
 
             out_code << ". " << temp3 << endl;
 
             //compare
-            out_code << $2 << " " << temp3 << ", " << temp1 << ", " << temp2 << endl;
+            //out_code << $2 << " " << temp3 << ", " << temp1 << ", " << temp2 << endl;
+
+            out_code << $2 << " " << temp3 << ", " << tempTable[tempTable.size()-3] << ", " << tempTable[tempTable.size()-2] << endl;
+
+
 
           }
          | TRUE 
@@ -373,28 +380,25 @@ Comp: EQ {$$ =  "==";}
       | LTE {$$ = "<=";}
       | GTE {$$ = ">=";};
 
-Exp: MultExp Exp2 {$$ = $1;}
-Exp2: ADD MultExp {mEfinished();} Exp2 {
-          TnO tempTnO;
-          tempTnO.operation = "+"; 
-          tempTnO.term = $2;
-          E.list.push_back(tempTnO); 
-          E.count++;
+Exp: MultExp {mEfinished();} Exp2 
+Exp2: ADD MultExp {mEfinished();} Exp2 {E.list.push_back("+");
+            string temp = make_temp();
 
+            out_code << ". " << temp << endl; 
+            out_code << "+ " << temp << ", " << tempTable[tempTable.size()-3] << ", " << tempTable[tempTable.size()-2] << endl;
         }
-      | SUB MultExp {mEfinished();} Exp2 {TnO tempTnO; tempTnO.operation = "-"; tempTnO.term = $2;E.list.push_back(tempTnO);  E.count++;}
-      | 
+      | SUB MultExp {mEfinished();} Exp2 {E.list.push_back("-");
+            string temp = make_temp();
+
+            out_code << ". " << temp << endl; 
+            out_code << "- " <<temp << ", " << tempTable[tempTable.size()-3] << ", " << tempTable[tempTable.size()-2] << endl;
+        }
+      | /*epsilon*/
       
-MultExp: Term {mE.place = $1;} MultExp2 {}
-MultExp2: MULT Term MultExp2 {
-            TnO tempTnO; 
-            tempTnO.operation = "*"; 
-            tempTnO.term = $2;
-            mE.list.push_back(tempTnO);  
-            E.count++;
-          }
-         | DIV Term MultExp2 {TnO tempTnO; tempTnO.operation = "/"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
-         | MOD Term MultExp2 {TnO tempTnO; tempTnO.operation = "%"; tempTnO.term = $2;mE.list.push_back(tempTnO);  E.count++;}
+MultExp: Term {mE.place = $1;} MultExp2 
+MultExp2: MULT Term MultExp2 {TnO tempTnO; tempTnO.operation = "*"; tempTnO.term = $2;mE.list.push_back(tempTnO); }
+         | DIV Term MultExp2 {TnO tempTnO; tempTnO.operation = "/"; tempTnO.term = $2;mE.list.push_back(tempTnO); }
+         | MOD Term MultExp2 {TnO tempTnO; tempTnO.operation = "%"; tempTnO.term = $2;mE.list.push_back(tempTnO); }
          | /*epsilon*/
 
 Term: SUB Var 
